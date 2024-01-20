@@ -13,7 +13,7 @@ import numpy as np
 load_dotenv()
 
 app = Flask(__name__)
-app.config['MONGO_URI'] = os.environ.get('FLASK_APP_BDA') #'mongodb+srv://baironbd:Baironbd1@cluster0.7b4ba4z.mongodb.net/Sensor?retryWrites=true&w=majority' 
+app.config['MONGO_URI'] = 'mongodb+srv://baironbd:Baironbd1@cluster0.7b4ba4z.mongodb.net/Sensor?retryWrites=true&w=majority' #os.environ.get('FLASK_APP_BDA') 
 mongo = PyMongo(app)
 
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
