@@ -87,6 +87,7 @@ def dataarray():
             'severidad': datainsert[9],
             'incidencia': datainsert[10],       
         })
+    #return jsonify(prediction)
     if (prediction[0] == 1):
         return jsonify('Cultivo infectado')
     else:
