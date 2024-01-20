@@ -70,7 +70,7 @@ def dataarray():
             ]
         )
         print(dataarray)
-        model = joblib.load("D:/ProyectoPrediccionCacao/backend/models/Abeldb.pkl")
+        model = joblib.load("model/Abeldb.pkl")
         X_test = np.array(dataarray)
         prediction = model.predict(X_test).tolist()
         datainsert = dataarray[0] + [prediction[0]]
