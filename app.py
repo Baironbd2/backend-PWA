@@ -13,7 +13,7 @@ import numpy as np
 load_dotenv()
 
 app = Flask(__name__)
-app.config['MONGO_URI'] = 'mongodb+srv://baironbd:Baironbd1@cluster0.7b4ba4z.mongodb.net/Sensor?retryWrites=true&w=majority' #os.environ.get('FLASK_APP_BDA') 
+app.config['MONGO_URI'] = 'mongodb+srv://baironbd:Baironbd1@cluster0.7b4ba4z.mongodb.net/Sensor?retryWrites=true&w=majority' 
 mongo = PyMongo(app)
 
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
@@ -47,47 +47,50 @@ def dataall():
 @app.route('/api/predict', methods=['POST'])
 def dataarray():
     data = request.get_json()
-    print(data)
     planta = float(data['PLANTA'])
     fruto = float(data['FRUTO'])
+    Dew_Point = float(data['Dew_Point'])
+    Gust_Speed = float(data['Gust_Speed'])
+    RH = float(data['RH'])
+    Rain = float(data['Rain'])
+    Temperature = float(data['Temperature'])
+    Wind_Direction = float(data['Wind_Direction'])
+    Wind_Speed = float(data['Wind_Speed'])
     severidad = float(data['SEVERIDAD'])
+
     dataarray = []   
-    doc = mongo.db.data.find_one(sort=[('_id', -1)])
-    if doc:
-        doc_dict = json_util.loads(json_util.dumps(doc))
-        dataarray.append(
-            [
-                doc_dict["Rain "],
-                doc_dict["Temperature "],
-                doc_dict["RH "],
-                doc_dict["Dew Point"],
-                doc_dict["Wind Speed "],
-                doc_dict["Gust Speed "],
-                doc_dict["Wind Direction "],
-                planta,
-                fruto,
-                severidad,
-            ]
-        )
-        print(dataarray)
-        model = joblib.load("model/Abeldb.pkl")
-        X_test = np.array(dataarray)
-        prediction = model.predict(X_test).tolist()
-        datainsert = dataarray[0] + [prediction[0]]
-        mongo.db.Predictions.insert_one({
-            'Rain': datainsert[0],
-            'Temperature': datainsert[1],
-            'RH': datainsert[2],
-            'Dew_Point': datainsert[3],
-            'Wind_Speed': datainsert[4],
-            'Gust_Speed': datainsert[5],
-            'Wind_Direction':datainsert[6],
-            'planta': datainsert[7],
-            'fruto': datainsert[8],
-            'severidad': datainsert[9],
-            'incidencia': datainsert[10],       
-        })
-    #return jsonify(prediction)
+
+    dataarray.append(
+        [
+            Rain,
+            Dew_Point,
+            Temperature,
+            RH,
+            Wind_Speed,
+            Gust_Speed,
+            Wind_Direction,
+            planta,
+            fruto,
+            severidad,
+        ]
+    )
+    model = joblib.load("model/Abeldb.pkl")
+    X_test = np.array(dataarray)
+    prediction = model.predict(X_test).tolist()
+    datainsert = dataarray[0] + [prediction[0]]
+    mongo.db.Predictions.insert_one({
+        'Rain': datainsert[0],
+        'Temperature': datainsert[1],
+        'RH': datainsert[2],
+        'Dew_Point': datainsert[3],
+        'Wind_Speed': datainsert[4],
+        'Gust_Speed': datainsert[5],
+        'Wind_Direction':datainsert[6],
+        'planta': datainsert[7],
+        'fruto': datainsert[8],
+        'severidad': datainsert[9],
+        'incidencia': datainsert[10],       
+    })
     if (prediction[0] == 1):
         return jsonify('Cultivo infectado')
     else:
