@@ -13,7 +13,6 @@ import numpy as np
 load_dotenv()
 
 app = Flask(__name__)
-# app.config['MONGO_URI'] = 'mongodb+srv://baironbd:Baironbd1@cluster0.7b4ba4z.mongodb.net/Sensor?retryWrites=true&w=majority' 
 app.config['MONGO_URI'] = os.getenv('MONGO_URL')
 
 mongo = PyMongo(app)
